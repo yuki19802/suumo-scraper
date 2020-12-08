@@ -21,6 +21,13 @@ func main() {
 	log.Printf("Found %d wards", len(wards))
 
 	for _, ward := range wards {
+		path := fmt.Sprintf("data/%s.json", ward.Code)
+
+		if _, err := os.Stat(path); !os.IsNotExist(err) {
+			log.Printf("Data already exists for %s (%s), skipping...", ward.Name, ward.Code)
+			continue
+		}
+
 		log.Printf("Fetching %s (%s)", ward.Name, ward.Code)
 
 		listings, err := suumo.WardListings(ward)
@@ -31,7 +38,7 @@ func main() {
 
 		fmt.Println("Total hits:", len(listings))
 
-		file, err := os.Create(fmt.Sprintf("data/%s.json", ward.Code))
+		file, err := os.Create(path)
 
 		if err != nil {
 			log.Fatal("Failed to open file to write:", err)
