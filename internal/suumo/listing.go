@@ -1,8 +1,8 @@
 package suumo
 
 type Listing struct {
-	Title         string
+	Title        string
 	Neighborhood string
 	AgeYears     int
-	Floors       int
+	Floor        int
 }

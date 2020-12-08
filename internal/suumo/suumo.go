@@ -36,13 +36,32 @@ func WardListings(wardCode string) ([]Listing, error) {
 	c.OnHTML(".l-cassetteitem > li", func(li *colly.HTMLElement) {
 		name := li.ChildText(".cassetteitem_content-title")
 		neighborhood := li.ChildText(".cassetteitem_detail-col1")
+		yearsRaw := li.ChildText(".cassetteitem_detail-col3 > div:first-of-type")
 
-		listing := Listing{
-			Title: name,
-			Neighborhood: neighborhood,
+		parsedYears, err := extractAgeYears(yearsRaw)
+
+		if err != nil {
+			panic(fmt.Sprint("bad year:", yearsRaw, err))
 		}
 
-		listings = append(listings, listing)
+		li.ForEach("tr.js-cassette_link", func(i int, tr *colly.HTMLElement) {
+			rawFloor := tr.ChildText("td:nth-child(3)")
+
+			parsedFloor, err := extractFloor(rawFloor)
+
+			if err != nil {
+				panic(fmt.Sprint("bad floor:", rawFloor, err))
+			}
+
+			listing := Listing{
+				Title: name,
+				Neighborhood: neighborhood,
+				AgeYears: parsedYears,
+				Floor: parsedFloor,
+			}
+
+			listings = append(listings, listing)
+		})
 	})
 
 	err := c.Visit(url)
