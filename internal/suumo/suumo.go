@@ -53,11 +53,32 @@ func WardListings(wardCode string) ([]Listing, error) {
 				panic(fmt.Sprint("bad floor:", rawFloor, err))
 			}
 
+			rawPrice := tr.ChildText("td:nth-child(4) .cassetteitem_price--rent")
+
+			parsedPrice, err := extractPriceYen(rawPrice)
+
+			if err != nil {
+				panic(fmt.Sprintf("bad price: %q %v", rawPrice, err))
+			}
+
+			layout := tr.ChildText(".cassetteitem_madori")
+
+			rawSquareMeters := tr.ChildText(".cassetteitem_menseki")
+
+			parsedSquareMeters, err := extractSquareMeters(rawSquareMeters)
+
+			if err != nil {
+				panic(fmt.Sprintf("bad square meters: %q %v", rawSquareMeters, err))
+			}
+
 			listing := Listing{
-				Title: name,
-				Neighborhood: neighborhood,
-				AgeYears: parsedYears,
-				Floor: parsedFloor,
+				Title:            name,
+				Neighborhood:     neighborhood,
+				AgeYears:         parsedYears,
+				Floor:            parsedFloor,
+				PricePerMonthYen: parsedPrice,
+				Layout:           layout,
+				SquareMeters:     parsedSquareMeters,
 			}
 
 			listings = append(listings, listing)
