@@ -50,6 +50,10 @@ func TestExtractFloor(t *testing.T) {
 			expectedOutput: 0,
 		},
 		{
+			input:          "5-6階",
+			expectedOutput: 0,
+		},
+		{
 			input:          "-",
 			expectedOutput: 0,
 		},

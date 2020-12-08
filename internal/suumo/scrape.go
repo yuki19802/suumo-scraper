@@ -2,17 +2,18 @@ package suumo
 
 import (
 	"fmt"
+	"log"
 
 	colly "github.com/gocolly/colly/v2"
 )
-
-// Chiyoda:  https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&ta=13&sc=13101&cb=0.0&ct=9999999&et=9999999&cn=9999999&mb=0&mt=9999999&shkr1=03&shkr2=03&shkr3=03&shkr4=03&fw2=&srch_navi=1
 
 const (
 	urlTokyo = "https://suumo.jp/chintai/tokyo/city/"
 )
 
-func ListWards() error {
+func ListWards() ([]Ward, error) {
+	wards := make([]Ward, 0)
+
 	c := colly.NewCollector()
 
 	c.OnHTML("#js-areaSelectForm", func(e *colly.HTMLElement) {
@@ -20,19 +21,40 @@ func ListWards() error {
 			name := e.ChildText("label span:first-of-type")
 			code := e.ChildAttr("input[type=\"checkbox\"]", "value")
 
-			fmt.Println(i, name, code)
+			if code != "" {
+				wards = append(wards, Ward{
+					Name: name,
+					Code: code,
+				})
+			}
 		})
 	})
 
-	return c.Visit(urlTokyo)
+	err := c.Visit(urlTokyo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return wards, nil
 }
 
-func WardListings(wardCode string) ([]Listing, error) {
+func WardListings(ward Ward) ([]Listing, error) {
 	listings := make([]Listing, 0)
 	c := colly.NewCollector()
-	url := fmt.Sprintf("https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&ta=13&sc=%s&cb=0.0&ct=9999999&et=9999999&cn=9999999&mb=0&mt=9999999&shkr1=03&shkr2=03&shkr3=03&shkr4=03&fw2=&srch_navi=1", wardCode)
 
-	fmt.Println(url)
+	c.OnRequest(func(r *colly.Request) {
+		log.Printf("Visiting page %s - %s", r.URL.Query().Get("page"), r.URL)
+	})
+
+	c.OnHTML(".pagination", func(e *colly.HTMLElement) {
+		e.ForEach("p.pagination-parts:last-of-type a", func(i int, a *colly.HTMLElement) {
+			if a.Text == "次へ" {
+				a.Request.Visit(a.Attr("href"))
+			}
+		})
+	})
+
 	c.OnHTML(".l-cassetteitem > li", func(li *colly.HTMLElement) {
 		name := li.ChildText(".cassetteitem_content-title")
 		neighborhood := li.ChildText(".cassetteitem_detail-col1")
@@ -79,11 +101,14 @@ func WardListings(wardCode string) ([]Listing, error) {
 				PricePerMonthYen: parsedPrice,
 				Layout:           layout,
 				SquareMeters:     parsedSquareMeters,
+				Ward:             ward,
 			}
 
 			listings = append(listings, listing)
 		})
 	})
+
+	url := fmt.Sprintf("https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&ta=13&sc=%s&cb=0.0&ct=9999999&mb=0&mt=9999999&et=9999999&cn=9999999&shkr1=03&shkr2=03&shkr3=03&shkr4=03&sngz=&po1=25&pc=10&page=1", ward.Code)
 
 	err := c.Visit(url)
 

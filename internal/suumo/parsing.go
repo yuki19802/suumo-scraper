@@ -20,7 +20,7 @@ func extractAgeYears(raw string) (int, error) {
 }
 
 func extractFloor(raw string) (int, error) {
-	if strings.HasPrefix(raw, "B") || raw == "-" {
+	if strings.ContainsAny(raw, "B-") {
 		return 0, nil
 	}
 
