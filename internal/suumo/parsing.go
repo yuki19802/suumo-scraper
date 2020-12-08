@@ -50,7 +50,8 @@ func extractPriceYen(raw string) (int, error) {
 }
 
 func extractSquareMeters(raw string) (float32, error) {
-	trimmed := strings.TrimRight(raw, "2m")
+	trimmed := strings.TrimRight(raw, "2")
+	trimmed = strings.TrimRight(trimmed, "m")
 
 	parsed, err := strconv.ParseFloat(trimmed, 32)
 

@@ -113,6 +113,10 @@ func TestExtractSquareMeters(t *testing.T) {
 			input:          "48.33m",
 			expectedOutput: 48.33,
 		},
+		{
+			input:          "22m2",
+			expectedOutput: 22.00,
+		},
 	}
 
 	for _, test := range tests {
