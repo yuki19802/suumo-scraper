@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/evertras/suumo-scraper/internal/suumo"
 )
@@ -20,36 +21,46 @@ func main() {
 
 	log.Printf("Found %d wards", len(wards))
 
+	wait := sync.WaitGroup{}
+
 	for _, ward := range wards {
-		path := fmt.Sprintf("data/%s.json", ward.Code)
+		wait.Add(1)
+		go func(ward suumo.Ward) {
+			defer wait.Done()
+			path := fmt.Sprintf("data/%s.json", ward.Code)
 
-		if _, err := os.Stat(path); !os.IsNotExist(err) {
-			log.Printf("Data already exists for %s (%s), skipping...", ward.Name, ward.Code)
-			continue
-		}
+			if _, err := os.Stat(path); !os.IsNotExist(err) {
+				log.Printf("Data already exists for %s (%s), skipping...", ward.Name, ward.Code)
+				return
+			}
 
-		log.Printf("Fetching %s (%s)", ward.Name, ward.Code)
+			log.Printf("Fetching %s (%s)", ward.Name, ward.Code)
 
-		listings, err := suumo.WardListings(ward)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+			listings, err := suumo.WardListings(ward)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 
-		fmt.Println("Total hits:", len(listings))
+			fmt.Println("Total hits:", len(listings))
 
-		file, err := os.Create(path)
+			file, err := os.Create(path)
 
-		if err != nil {
-			log.Fatal("Failed to open file to write:", err)
-		}
+			if err != nil {
+				log.Fatal("Failed to open file to write:", err)
+			}
 
-		encoder := json.NewEncoder(file)
+			encoder := json.NewEncoder(file)
 
-		err = encoder.Encode(listings)
+			err = encoder.Encode(listings)
 
-		if err != nil {
-			log.Fatal("Failed to encode JSON to file:", err)
-		}
+			if err != nil {
+				log.Fatal("Failed to encode JSON to file:", err)
+			}
+		}(ward)
 	}
+
+	wait.Wait()
+
+	log.Println("Done!")
 }
