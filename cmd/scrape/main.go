@@ -7,14 +7,15 @@ import (
 	"os"
 	"sync"
 
-	"github.com/evertras/suumo-scraper/internal/suumo"
+	"github.com/yuki19802/suumo-scraper/internal/suumo"
 )
 
 func main() {
 	log.Println("Getting wards...")
 
-	wards, err := suumo.ListWards()
-
+	wards, err := suumo.ListWards2()
+	//wardsリストとnilを返すが、wardsに値が入っているうちはnilを返さない＝最後に返す
+	log.Println(wards, err)
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +37,7 @@ func main() {
 
 			log.Printf("Fetching %s (%s)", ward.Name, ward.Code)
 
-			listings, err := suumo.WardListings(ward)
+			listings, err := suumo.WardListings2(ward)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)

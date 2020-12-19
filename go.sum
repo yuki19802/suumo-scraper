@@ -22,6 +22,8 @@ github.com/elastic/go-elasticsearch/v7 v7.5.1-0.20201026095746-17c910458d57 h1:W
 github.com/elastic/go-elasticsearch/v7 v7.5.1-0.20201026095746-17c910458d57/go.mod h1:OJ4wdbtDNk5g503kvlHLyErCgQwwzmDtaFC4XyOxXA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
+github.com/evertras/suumo-scraper v0.0.0-20201212095856-8f3ca308fe12 h1:i+/xjy7fEcq6L93T1SCpcMhILNAWUCo11AZnKMyVKgE=
+github.com/evertras/suumo-scraper v0.0.0-20201212095856-8f3ca308fe12/go.mod h1:4g29GJRkOkIgCou3fPb+IP9wFFfb2AODqRjIn8GV0cg=
 github.com/gobwas/glob v0.2.3 h1:A4xDbljILXROh+kObIiy5kIaPYD8e96x1tgBhUI5J+Y=
 github.com/gobwas/glob v0.2.3/go.mod h1:d3Ez4x06l9bZtSvzIay5+Yzi0fmZzPgnTbPcKjJAkT8=
 github.com/gocolly/colly v1.2.0 h1:qRz9YAn8FIH0qzgNUw+HT9UN7wm1oF9OBAilwEWpyrI=

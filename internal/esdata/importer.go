@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/elastic/go-elasticsearch/v7"
-	"github.com/evertras/suumo-scraper/internal/suumo"
+	"github.com/yuki19802/suumo-scraper/internal/suumo"
 )
 
 type Importer struct {
