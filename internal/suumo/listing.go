@@ -12,8 +12,11 @@ package suumo
 // }
 
 type Listing struct {
-	Title string `json:"title"`
-	Price string `json:"price"`
-	// Neighborhood string `json:"neighborhood"`
-	Ward Ward `json:"ward"`
+	Title           string `json:"title"`
+	Price           string `json:"price"`
+	Neighborhood    string `json:"neighborhood"`
+	Dist_to_station string `json:"dist_to_station"`
+	SquareMeters    string `json:"rawSquareMeters"`
+	AgeYears        string `json:"rawYears"`
+	Ward            Ward   `json:"ward"`
 }
