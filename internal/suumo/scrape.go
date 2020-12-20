@@ -117,7 +117,7 @@ func WardListings2(ward Ward) ([]Listing, error) {
 		listings = append(listings, listing)
 	})
 
-	url_sell := fmt.Sprintf("https://suumo.jp/jj/bukken/ichiran/JJ010FJ001/?ar=050&bs=011&ta=23&sc=%s&kb=1&kt=9999999&mb=0&mt=9999999&ekTjCd=&ekTjNm=&tj=0&cnb=0&cn=9999999&pn=2", ward.Code)
+	url_sell := fmt.Sprintf("https://suumo.jp/jj/bukken/ichiran/JJ010FJ001/?ar=050&bs=011&ta=23&sc=%s&kb=1&kt=9999999&mb=0&mt=9999999&ekTjCd=&ekTjNm=&tj=0&cnb=0&cn=9999999&pn=1", ward.Code)
 	err := c.Visit(url_sell)
 	if err != nil {
 		return nil, err
